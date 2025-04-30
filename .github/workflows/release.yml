@@ -1,0 +1,78 @@
+name: Bump Version and Publish to NPM
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag version (e.g., 1.0.0 or v1.0.0)'
+        required: true
+      message:
+        description: 'Tag message'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'GitHub Actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Determine tag version
+        id: determine_version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [[ $VERSION != v* ]]; then
+            TAG_VERSION="v$VERSION"
+          else
+            TAG_VERSION="$VERSION"
+            VERSION="${VERSION#v}"
+          fi
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Update package.json version
+        run: |
+          npx json -I -f package.json -e "this.version='${{ env.VERSION }}'"
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: 'https://registry.npmjs.org/'
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run type check
+        run: pnpm run prepublishOnly
+
+      - name: Commit files
+        run: |
+          git add package.json
+          git commit -m "chore: bump version to ${{ env.VERSION }}"
+
+      - name: Create tag
+        run: |
+          git tag -a "${{ env.TAG_VERSION }}" -m "${{ github.event.inputs.message }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ github.token }}
+          branch: ${{ github.ref }}
+          tags: true
+
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
