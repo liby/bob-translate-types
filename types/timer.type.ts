@@ -1,4 +1,3 @@
-
 interface TimerScheduleOptions {
   interval: number;
   repeats: boolean;

@@ -3,12 +3,17 @@ import { Data } from "./data.type";
 interface WebSocketConfig {
   url: string;
   allowSelfSignedSSLCertificates?: boolean;
-  timeoutInterval?: number; // 默认 60 秒
-  header?: { [key: string]: string };
+  /**
+   * 默认 60 秒
+   */
+  timeoutInterval?: number;
 }
 
 interface CloseConfig {
-  code?: number; // 参考 https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4
+  /**
+   * 参考 https://www.rfc-editor.org/rfc/rfc6455.html#section-7.4
+   */
+  code?: number;
 }
 
 interface WebSocket {

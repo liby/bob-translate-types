@@ -1,3 +1,7 @@
+/**
+ * 支持的语言列表
+ * 每项为[语言标准代码, 语言显示名称]的元组
+ */
 const supportLanguageList = [
   ["auto", "auto"],
   ["zh-Hans", "zh-CN"],
@@ -116,4 +120,8 @@ const supportLanguageList = [
   ["zu", "zu"],
 ] as const;
 
+/**
+ * 语言标识符类型
+ * 表示 Bob 支持的语言标准代码
+ */
 export type Language = typeof supportLanguageList[number][0];
