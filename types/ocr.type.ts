@@ -141,10 +141,10 @@ export interface OcrStructuredResult extends OcrResultBase {
 export type OcrResult = OcrFlatResult | OcrStructuredResult;
 
 export interface OcrCompletionResult {
+  error?: never;
   /**
    * OCR 识别成功的结果
    */
-  error?: never;
   result: OcrResult;
 }
 
