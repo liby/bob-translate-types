@@ -117,7 +117,31 @@ interface ThinkInfo {
   splitThinkTag: boolean;
 }
 
+/**
+ * 该对象用于描述译文文本及其展示格式
+ * @remarks Bob 1.21.0+ 可用
+ */
+interface ContentObject {
+  /**
+   * 文本格式，决定 Bob 如何解析 text，不传时为 plain。
+   * plain 按原样展示纯文本；markdown 按 Markdown 渲染；
+   * lines 为逐行译文，Bob 会将每一行对应到原文的非空行
+   */
+  format?: 'plain' | 'markdown' | 'lines';
+  /**
+   * 译文文本，流式输出时传入累积后的完整文本
+   */
+  text?: string;
+}
+
 export interface TextTranslateResult {
+  /**
+   * 译文内容，优先级高于 toParagraphs。
+   * content、toParagraphs、toDict 至少有一个有值，
+   * 同时传入 content 和 toParagraphs 可兼容 Bob 1.21.0 之前的版本
+   * @remarks Bob 1.21.0+ 可用
+   */
+  content?: ContentObject;
   /**
    * 由翻译接口提供的源语种，可以与查询时的 from 不同
    */
@@ -138,7 +162,7 @@ export interface TextTranslateResult {
   raw?: any;
   /**
    * 推理类型大模型思考过程信息。
-   * 流式输出阶段 thinkInfo 有值时，toParagraphs 可以为空。可不传。
+   * 流式输出阶段 thinkInfo 有值时，content 可以为空。可不传。
    * @remarks Bob 1.15.0+ 可用
    */
   thinkInfo?: ThinkInfo;
@@ -152,8 +176,9 @@ export interface TextTranslateResult {
   toDict?: ToDictObject;
   /**
    * 译文分段拆分过后的 string 数组
+   * @deprecated Bob 1.21.0 起请使用 content，仅在需要兼容更早版本时传入
    */
-  toParagraphs: string[];
+  toParagraphs?: string[];
   /**
    * 译文的语音合成数据
    */
@@ -212,6 +237,11 @@ export interface TextTranslateQuery {
    * @remarks Bob 1.8.0+ 可用
    */
   onStream: HandleStream;
+  /**
+   * Bob 预处理（例如合并换行、拆分单词）之前的原始文本
+   * @remarks Bob 1.20.0+ 可用
+   */
+  originalText?: string;
   /**
    * 需要翻译的文本
    */
