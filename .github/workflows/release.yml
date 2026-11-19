@@ -49,12 +49,16 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           registry-url: 'https://registry.npmjs.org/'
-          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install
       - name: Run type check
         run: pnpm run prepublishOnly
+
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Commit files
         run: |
@@ -71,8 +75,3 @@ jobs:
           github_token: ${{ github.token }}
           branch: ${{ github.ref }}
           tags: true
-
-      - name: Publish to NPM
-        run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
