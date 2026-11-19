@@ -35,12 +35,11 @@ const pluginValidate: PluginValidate = (completion) => {
 
 ## 发布流程
 
-本项目使用GitHub Actions自动发布到NPM。发布流程如下：
+本项目使用 GitHub Actions 发布到 npm。发布流程如下：
 
-1. 更新版本号（在`package.json`中）
-2. 提交更改并推送到GitHub
-3. 创建一个新的GitHub Release或推送一个带版本号的Git标签（例如`v1.2.0`）
-4. GitHub Actions将自动构建并发布包到NPM
+1. 将更改合并到 `main`
+2. 在 GitHub Actions 中手动运行 `Bump Version and Publish to NPM`，填写版本号（例如 `1.2.0`）和标签说明
+3. 该 workflow 会更新 `package.json` 中的版本号、提交并推送带版本号的 Git 标签，然后发布到 npm
 
 ### 手动发布
 
