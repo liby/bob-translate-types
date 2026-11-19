@@ -39,7 +39,7 @@ const pluginValidate: PluginValidate = (completion) => {
 
 1. 将更改合并到 `main`
 2. 在 GitHub Actions 中手动运行 `Bump Version and Publish to NPM`，填写版本号（例如 `1.2.0`）和标签说明
-3. 该 workflow 会更新 `package.json` 中的版本号、提交并推送带版本号的 Git 标签，然后发布到 npm
+3. 该 workflow 会更新 `package.json` 中的版本号并发布到 npm，发布成功后提交版本号并推送对应的 Git 标签
 
 ### 手动发布
 
